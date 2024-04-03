@@ -1,20 +1,38 @@
 import json
-from jsonschema import validate
+import os
 
 def verify(json_file):
-    with open(json_file, 'r') as f:
-        data = json.load(f)
+
+    try:
+        f = open(json_file, 'r')
+    except FileNotFoundError:
+        print(f"Could not read the file {json_file}")
+        return True
+
+    with f:
+        file_size = os.path.getsize(json_file)
+        if (file_size == 0):
+            print("File is empty")
+            return True
+        try:
+            data = json.load(f)
+        except json.JSONDecodeError:
+            print("Invalid json file")
+            return True
         
-    resource = data['PolicyDocument']['Statement'][0]['Resource']
+
+    resource = None
+    try:
+        resource = data['PolicyDocument']['Statement'][0]['Resource']
+    except KeyError:
+        print('Some key in .json file is missing')
     
+
     if resource == '*':
         return False
-    
-    return True
+    else:
+        return True
 
 json_file = '/home/nastia/remitly/test.json'
 result = verify(json_file)
 print(result)
-
-
-# TODO: cornercases: resource doesn't exist, resource is empty, json isn't valid, 
