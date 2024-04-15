@@ -29,8 +29,9 @@ def verify(json_file):
     else:
         return True
     
-root = os.getenv('REPO_ROOT')
 
-json_file = root + '/test.json'
-result = verify(json_file)
-print(result)
+if __name__ == '__main__':
+    root = os.getenv('REPO_ROOT')
+    json_file = root + '/resources/test.json'
+    result = verify(json_file)
+    print(result)
